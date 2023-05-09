@@ -1,6 +1,6 @@
 const url = "http://localhost:8443/sod"
 
-describe("Demanda EndPoint - Teste de carga", () => {
+describe("Demanda EndPoint - Teste de integração", () => {
     const pessoaLogin = {
         senha: 123,
         email: "romario@gmail.com"
