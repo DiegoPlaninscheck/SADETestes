@@ -20,7 +20,7 @@ describe("ATA EndPoint - Teste de processo", () => {
 
     let pauta = {
         "pauta": {
-            "idPauta": 2
+            "idPauta": 1
         },
         "tituloReuniaoATA": "Título da reunião da ata",
         "dataReuniao": "2023-06-06",
@@ -33,35 +33,60 @@ describe("ATA EndPoint - Teste de processo", () => {
             {
                 "idUsuario": 4
             }
-        ],
-        "numeroAno": 1,
-        "numeroDG": 1
+        ]
     }
 
-    // it("Cadastrar ATA", () => {
-    //     cy.request({
-    //         method: "POST",
-    //         url: `${url}/ata`,
-    //         body: pauta,
-    //         headers
-    //     }).then((res) => {
-    //         expect(res.body).to.not.null
-    //         expect(res.status).to.eq(200)
-    //         console.log(res);
-    //     });
-    // })
+    let idATA;
 
-    // it("Colocar o parecer da Direção Geral na ATA", () => {
-    //     cy.request({
-    //         method: "POST",
-    //         url: `${url}/ata`,
-    //         body: pauta,
-    //         headers
-    //     }).then((res) => {
-    //         expect(res.body).to.not.null
-    //         expect(res.status).to.eq(200)
-    //         console.log(res);
-    //     });
-    // })
+    it("Cadastrar ATA", () => {
+        cy.request({
+            method: "POST",
+            url: `${url}/ata`,
+            body: pauta,
+            headers
+        }).then((res) => {
+            expect(res.body).to.not.null
+            expect(res.status).to.eq(200)
+            console.log(res);
+            idATA = res.body.idATA;
+        });
+    })
+
+    const formData = new FormData();
+
+    let ATAEditada = {
+        "numeroAno": 2023,
+        "numeroDG": 35243543543,
+        "propostasAta": [
+            {
+                "numeroSequencial": 333,
+                "statusDemandaComissao": "BUSINESSCASE",
+                "comentario": "comentario ae, joia",
+                "proposta": {
+                    "idProposta": 15
+                }
+            },
+        ]
+    }
+
+    formData.append("ata", JSON.stringify(ATAEditada));
+
+    it("Colocar o parecer da Direção Geral na ATA", () => {
+
+        cy.request({
+            method: "PUT",
+            url: `${url}/ata/${idATA}/1`,
+            body: formData,
+            headers
+        }).then((res) => {
+            expect(res.body).to.not.null
+            expect(res.status).to.eq(200)
+            console.log(res);
+        });
+
+        // cy.request("DELETE", url + `/ata/${idATA}`).then((res) => {
+        //     console.log(res);
+        // })
+    })
 
 })
