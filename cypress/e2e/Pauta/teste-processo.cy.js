@@ -28,12 +28,13 @@ describe("Pauta EndPoint - Teste de Processo", () => {
         },
         "propostasPauta": [
             {
-                "proposta": {
-                    "idProposta": 4
-                }
+                "idProposta": 4
             }
-        ]
+        ],
+        "teste": true
     }
+
+    let idPauta;
 
     it("Cadastrar Pauta no banco", () => {
         cy.request({
@@ -43,8 +44,51 @@ describe("Pauta EndPoint - Teste de Processo", () => {
             headers
         }).then((res) => {
             console.log(res);
+            idPauta = res.body.idPauta
             expect(res.status).to.eq(200)
-            expect(res.body.length).to.be.gte(0)
+            expect(res.body).to.not.null;
+
+            pautaDTO.propostasPauta = res.body.propostasPauta
+        });
+
+    })
+
+
+    it("Colocar o parecer da Comissão na Pauta", () => {
+        const formData = new FormData();
+        const listaDecisoesPropostaspauta = []
+
+        for (let decisaoProposta of pautaDTO.propostasPauta) {
+            console.log(decisaoProposta);
+            let infoDecisao = {
+                idDecisaoPropostaPauta: decisaoProposta.idDecisaoPropostaPauta,
+                "statusDemandaComissao": "TODO",
+                "ataPublicada": false,
+                "comentario": "comentario fodao sifnwuybgrv"
+            }
+
+            listaDecisoesPropostaspauta.push(infoDecisao)
+        }
+
+        let pautaEdicaoDTO = {
+            "dataReuniaoATA": "2024-12-03",
+            "propostasPauta": listaDecisoesPropostaspauta,
+            "teste": true
+        }
+
+        formData.append("pauta", JSON.stringify(pautaEdicaoDTO));
+
+        console.log(pautaEdicaoDTO);
+
+        cy.request({
+            method: "PUT",
+            url: `${url}/pauta/${idPauta}/3`,
+            body: formData,
+            headers
+        }).then((res) => {
+            console.log(res);
+            expect(res.status).to.eq(200)
+            expect(res.body).to.not.null;
         });
 
     })
