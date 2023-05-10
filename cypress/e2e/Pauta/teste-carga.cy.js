@@ -1,4 +1,4 @@
-describe("Pauta EndPoint - Teste de Integração", () => {
+describe("Pauta EndPoint - Teste de Carga", () => {
     const url = "localhost:8443/sod"
 
     const pessoaLogin = {
