@@ -17,6 +17,7 @@ describe("ATA EndPoint - Teste de Carga", () => {
         });
     });
 
+    //fzaer for com it dentro
     it("Buscar todas as ATAs do banco 100 vezes", () => {
         for (let i = 0; i < 100; i++) {
             cy.request({

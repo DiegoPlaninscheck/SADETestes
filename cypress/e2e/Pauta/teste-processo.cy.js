@@ -81,6 +81,8 @@ describe("Pauta EndPoint - Teste de Processo", () => {
             expect(res.body).to.not.null;
         });
 
+        //consultar a pauta para ver se os pareceres das propostas foram atualizados
+
         cy.request({
             method: "DELETE",
             url: `${url}/pauta/${idPauta}`,

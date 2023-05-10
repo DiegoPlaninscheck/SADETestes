@@ -1,7 +1,7 @@
 describe("Usuário Endpoint - Teste de Integração", () => {
     const pessoaLogin = {
         senha: 123,
-        email: "romario@weg.net"
+        email: "romario@gmail.com"
     };
     const url = "http://localhost:8443/sod";
     let headers = {

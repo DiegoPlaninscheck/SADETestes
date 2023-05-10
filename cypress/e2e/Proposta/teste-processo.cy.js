@@ -70,6 +70,8 @@ describe("Proposta Endpoint - Teste de Processo", () => {
                 formData.append("proposta", JSON.stringify(propostaCadastrada));
                 formData.set('pdfVersaoHistorico', blob);
 
+                console.log(propostaCadastrada);
+
                 return cy.request({
                     ...requestOptions,
                     body: formData,
@@ -77,6 +79,10 @@ describe("Proposta Endpoint - Teste de Processo", () => {
             }).then(response => {
                 const dec = new TextDecoder();
                 propostaCadastrada = JSON.parse(dec.decode(response.body));
+
+                console.log("Banco");
+
+                console.log(propostaCadastrada);
 
                 idProposta = propostaCadastrada.idProposta;
             });
@@ -127,6 +133,8 @@ describe("Proposta Endpoint - Teste de Processo", () => {
             url: urlProposta + "/" + idProposta + "/3",
             headers,
         });
+
+        //verificar se os centros de custo foram editados
 
         cy.deleteProposta();
     });

@@ -1,13 +1,13 @@
 describe("Usuário Endpoint - Teste de Processo", () => {
     const pessoaLogin = {
         senha: 123,
-        email: "romario@weg.net"
+        email: "romario@gmail.com"
     };
     const pessoaEditada = {
         "numeroCadastro": 678,
         "nomeUsuario": "Romário",
         "departamento": "TI",
-        "email": "romario@weg.net",
+        "email": "romario@gmail.com",
         "senha": "123",
         "setor": "TI",
         "cargo": "Desenvolvedor Backend",
@@ -45,6 +45,8 @@ describe("Usuário Endpoint - Teste de Processo", () => {
             cy.setCookie("jwt", headers['Cookie']);
         });
     });
+
+    //fazer processo de cadastro e login com outro usuário
 
     it("Alterar foto de perfil", () => {
         cy.fileRequest('../e2e/Assets/romario.jpeg', {
