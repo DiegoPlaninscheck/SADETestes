@@ -56,7 +56,7 @@ describe("ATA EndPoint - Teste de processo", () => {
 
     it("Colocar o parecer da Direção Geral na ATA", () => {
          ataObject = {
-            // ...ataObject,
+            "idATA": ataObject.idATA,
             "numeroAno": 2023,
             "numeroDG": 35243543543,
             "propostasAta": [
@@ -77,7 +77,7 @@ describe("ATA EndPoint - Teste de processo", () => {
     
         cy.request({
             method: "PUT",
-            url: `${url}/ata/${ataObject.idATA}/1`,
+            url: `${url}/ata/${ataObject.idATA}/3`,
             body: formData,
             headers
         }).then((res) => {
@@ -85,8 +85,7 @@ describe("ATA EndPoint - Teste de processo", () => {
             expect(res.status).to.eq(200)
         });
 
-        // cy.deleteAta()
-
+        cy.deleteAta()
     })
 
 })
