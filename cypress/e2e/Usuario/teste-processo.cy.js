@@ -56,10 +56,16 @@ describe("Usuário Endpoint - Teste de Processo", () => {
     it("Ver gerente de departamento do usuário logado", () => {
         cy.request({
             method: 'GET',
-            url: urlUsuario + "/gerente/departamento/TI",
+            url: urlUsuario,
             headers
         }).then(response => {
-            console.log(">>>>>>>> RESPONSE VER GERENTE: \n", response.body);
+            console.log(response);
+        });
+
+        cy.request("GET", urlUsuario + "/gerente/departamento/TI").as("TodoRequest");
+        cy.get("@TodoRequest").then(response => {
+            console.log(">>>>>>>> GERENTE: \n", response.body)
+            expect(response.status).to.eq(200);
         });
     });
 });
