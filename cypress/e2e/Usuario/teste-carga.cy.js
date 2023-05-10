@@ -19,6 +19,14 @@ describe("Usuário Endpoint - Teste de Carga", () => {
     });
 
     it("Pegar todos os usuários", () => {
+        cy.request({
+            method: 'GET',
+            url: urlUsuario,
+            headers
+        }).then(response => {
+            console.log(response);
+        });
+
         for (let i = 0; i < 200; i++) {
             cy.request("GET", urlUsuario).as("TodoRequest");
             cy.get("@TodoRequest").then(response => {
