@@ -91,6 +91,16 @@ describe("Pauta EndPoint - Teste de Processo", () => {
             expect(res.body).to.not.null;
         });
 
+        cy.request({
+            method: "DELETE",
+            url: `${url}/pauta/${idPauta}`,
+            headers
+        }).then((res) => {
+            console.log(res);
+            expect(res.status).to.eq(200)
+            expect(res.body).to.eq("Pauta deletada com sucesso!");
+        });
+
     })
 
 })
