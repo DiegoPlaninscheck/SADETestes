@@ -1,23 +1,12 @@
 describe("Pauta EndPoint - Teste de Processo", () => {
-    const url = "localhost:8443/sod"
-
     const pessoaLogin = {
         senha: 123,
         email: "romario@gmail.com"
-    }
-
+    };
+    const url = "localhost:8443/sod";
     let headers = {
         'Cookie': ""
-    }
-
-    it('Pegar token de autenticação', () => {
-        cy.request("POST", url + "/login/auth/cookie", pessoaLogin).as("TodoRequest")
-        cy.get("@TodoRequest").then((response) => {
-            headers['Cookie'] = "jwt=" + response.body.value
-            cy.setCookie("jwt", headers['Cookie'])
-        })
-    })
-
+    };
     let pautaDTO = {
         "tituloReuniaoPauta": "Título da reunião da pauta",
         "dataReuniao": "2023-09-09",
@@ -32,53 +21,55 @@ describe("Pauta EndPoint - Teste de Processo", () => {
             }
         ],
         "teste": true
-    }
-
+    };
     let idPauta;
 
-    it("Cadastrar Pauta no banco", () => {
+
+    it('Pegar token de autenticação', () => {
+        cy.request("POST", url + "/login/auth/cookie", pessoaLogin).as("TodoRequest");
+        cy.get("@TodoRequest").then((response) => {
+            headers['Cookie'] = "jwt=" + response.body.value;
+            cy.setCookie("jwt", headers['Cookie']);
+        });
+    });
+
+    it("Cadastrar Pauta", () => {
         cy.request({
             method: "POST",
             url: `${url}/pauta/3`,
             body: pautaDTO,
             headers
         }).then((res) => {
-            console.log(res);
-            idPauta = res.body.idPauta
-            expect(res.status).to.eq(200)
+            expect(res.status).to.eq(200);
             expect(res.body).to.not.null;
 
-            pautaDTO.propostasPauta = res.body.propostasPauta
+            pautaDTO.propostasPauta = res.body.propostasPauta;
+            idPauta = res.body.idPauta;
         });
 
-    })
-
+    });
 
     it("Colocar o parecer da Comissão na Pauta", () => {
         const formData = new FormData();
-        const listaDecisoesPropostaspauta = []
+        const listaDecisoesPropostaspauta = [];
+        let pautaEdicaoDTO = {
+            "dataReuniaoATA": "2024-12-03",
+            "propostasPauta": listaDecisoesPropostaspauta,
+            "teste": true
+        };
 
         for (let decisaoProposta of pautaDTO.propostasPauta) {
-            console.log(decisaoProposta);
             let infoDecisao = {
                 idDecisaoPropostaPauta: decisaoProposta.idDecisaoPropostaPauta,
                 "statusDemandaComissao": "TODO",
                 "ataPublicada": false,
                 "comentario": "comentario fodao sifnwuybgrv"
-            }
+            };
 
-            listaDecisoesPropostaspauta.push(infoDecisao)
-        }
-
-        let pautaEdicaoDTO = {
-            "dataReuniaoATA": "2024-12-03",
-            "propostasPauta": listaDecisoesPropostaspauta,
-            "teste": true
+            listaDecisoesPropostaspauta.push(infoDecisao);
         }
 
         formData.append("pauta", JSON.stringify(pautaEdicaoDTO));
-
-        console.log(pautaEdicaoDTO);
 
         cy.request({
             method: "PUT",
@@ -86,8 +77,7 @@ describe("Pauta EndPoint - Teste de Processo", () => {
             body: formData,
             headers
         }).then((res) => {
-            console.log(res);
-            expect(res.status).to.eq(200)
+            expect(res.status).to.eq(200);
             expect(res.body).to.not.null;
         });
 
@@ -96,11 +86,10 @@ describe("Pauta EndPoint - Teste de Processo", () => {
             url: `${url}/pauta/${idPauta}`,
             headers
         }).then((res) => {
-            console.log(res);
-            expect(res.status).to.eq(200)
+            expect(res.status).to.eq(200);
             expect(res.body).to.eq("Pauta deletada com sucesso!");
         });
 
-    })
+    });
 
-})
+});

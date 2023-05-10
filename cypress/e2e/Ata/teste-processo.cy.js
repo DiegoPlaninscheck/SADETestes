@@ -1,12 +1,12 @@
 describe("ATA EndPoint - Teste de processo", () => {
-    const url = "localhost:8443/sod"
+    const url = "localhost:8443/sod";
     const pessoaLogin = {
         senha: 123,
         email: "romario@gmail.com"
-    }
+    };
     let headers = {
         'Cookie': ""
-    }  
+    };
     let ataObject = {
         "pauta": {
             "idPauta": 1
@@ -20,25 +20,25 @@ describe("ATA EndPoint - Teste de processo", () => {
                 "idUsuario": 6
             }
         ]
-    }
+    };
 
 
     Cypress.Commands.add('deleteAta', () => {
         cy.request("DELETE", url + "/ata/" + ataObject.idATA)
             .then((response) => {
-                expect(response.status).to.eq(200)
-                expect(response.duration).to.be.lte(1000)
-            })
+                expect(response.status).to.eq(200);
+                expect(response.duration).to.be.lte(1000);
+            });
     });
 
 
     it('Pegar token de autenticação', () => {
-        cy.request("POST", url + "/login/auth/cookie", pessoaLogin).as("TodoRequest")
+        cy.request("POST", url + "/login/auth/cookie", pessoaLogin).as("TodoRequest");
         cy.get("@TodoRequest").then((response) => {
-            headers['Cookie'] = "jwt=" + response.body.value
-            cy.setCookie("jwt", headers['Cookie'])
-        })
-    })
+            headers['Cookie'] = "jwt=" + response.body.value;
+            cy.setCookie("jwt", headers['Cookie']);
+        });
+    });
 
     it("Cadastrar ATA", () => {
         cy.request({
@@ -47,15 +47,15 @@ describe("ATA EndPoint - Teste de processo", () => {
             body: ataObject,
             headers
         }).then((res) => {
-            expect(res.body).to.not.null
-            expect(res.status).to.eq(200)
+            expect(res.body).to.not.null;
+            expect(res.status).to.eq(200);
 
             ataObject = res.body;
         });
-    })
+    });
 
-    it("Colocar o parecer da Direção Geral na ATA", () => {
-         ataObject = {
+    it("Adicionar o parecer da Direção Geral na ATA", () => {
+        ataObject = {
             "idATA": ataObject.idATA,
             "numeroAno": 2023,
             "numeroDG": 35243543543,
@@ -69,23 +69,22 @@ describe("ATA EndPoint - Teste de processo", () => {
                     }
                 },
             ]
-        }
-    
+        };
 
         const formData = new FormData();
         formData.append("ata", JSON.stringify(ataObject));
-    
+
         cy.request({
             method: "PUT",
             url: `${url}/ata/${ataObject.idATA}/3`,
             body: formData,
             headers
         }).then((res) => {
-            expect(res.body).to.not.null
-            expect(res.status).to.eq(200)
+            expect(res.body).to.not.null;
+            expect(res.status).to.eq(200);
         });
 
-        cy.deleteAta()
-    })
+        cy.deleteAta();
+    });
 
-})
+});

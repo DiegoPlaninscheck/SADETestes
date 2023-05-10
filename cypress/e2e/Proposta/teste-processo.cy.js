@@ -3,18 +3,18 @@ const url = "http://localhost:8443/sod"
 describe("Proposta Endpoint - Teste de Processo", () => {
     const pessoaLogin = {
         senha: 123,
-        email: "romario@weg.net"
+        email: "romario@gmail.com"
     };
+    const urlProposta = url + "/proposta";
     let headers = {
         'Cookie': ""
     };
-    const urlProposta = url + "/proposta";
-    const propostaCadastrada = {
+    let propostaCadastrada = {
         "escopo": "hum, é viável, bora ver no que da",
         "periodoExecucaoInicio": "2023-07-12",
         "periodoExecucaoFim": "2023-07-22",
         "demanda": {
-            "idDemanda": 15
+            "idDemanda": 2
         },
         "responsaveisNegocio": [
             {
@@ -59,21 +59,15 @@ describe("Proposta Endpoint - Teste de Processo", () => {
             }
         ]
     };
+    let idProposta = 0;
 
-    it('Pegar token de autenticação', () => {
-        cy.request("POST", url + "/login/auth/cookie", pessoaLogin).as("TodoRequest");
-        cy.get("@TodoRequest").then((response) => {
-            headers['Cookie'] = "jwt=" + response.body.value;
-            cy.setCookie("jwt", headers['Cookie']);
-        });
-    });
 
     Cypress.Commands.add('fileRequest', (filePath, requestOptions) => {
         return cy
             .fixture(filePath, 'binary').then(file => {
                 const blob = Cypress.Blob.binaryStringToBlob(file);
                 const formData = new FormData();
-                formData.append("proposta", JSON.stringify(propostaCadastrada))
+                formData.append("proposta", JSON.stringify(propostaCadastrada));
                 formData.set('pdfVersaoHistorico', blob);
 
                 return cy.request({
@@ -81,8 +75,28 @@ describe("Proposta Endpoint - Teste de Processo", () => {
                     body: formData,
                 });
             }).then(response => {
-                console.log(">>>>>>>> PROPOSTA: \n", response);
+                const dec = new TextDecoder();
+                propostaCadastrada = JSON.parse(dec.decode(response.body));
+
+                idProposta = propostaCadastrada.idProposta;
             });
+    });
+
+    Cypress.Commands.add('deleteProposta', () => {
+        cy.request("DELETE", urlProposta + "/" + idProposta)
+            .then((response) => {
+                expect(response.status).to.eq(200);
+                expect(response.duration).to.be.lte(1000);
+            });
+    });
+
+
+    it('Pegar token de autenticação', () => {
+        cy.request("POST", url + "/login/auth/cookie", pessoaLogin).as("TodoRequest");
+        cy.get("@TodoRequest").then((response) => {
+            headers['Cookie'] = "jwt=" + response.body.value;
+            cy.setCookie("jwt", headers['Cookie']);
+        });
     });
 
     it("Cadastrar Proposta", () => {
@@ -94,18 +108,26 @@ describe("Proposta Endpoint - Teste de Processo", () => {
     });
 
     it("Editar centro de custo", () => {
-        cy.request({
-            method: 'PUT',
-            url: urlProposta,
-            headers
-        }).then(response => {
-            console.log(response);
+        let propostaEditar = {
+            "idProposta": propostaCadastrada.idProposta,
+            "tabelasCustoProposta": propostaCadastrada.tabelasCustoProposta
+        };
+
+        for (let tabela of propostaEditar.tabelasCustoProposta) {
+            for (let centroCusto of tabela.centrosCustoPagantes) {
+                centroCusto.centroCusto.idCentroCusto = 2;
+                centroCusto.porcentagemDespesa = 0.5;
+            }
+        }
+
+        propostaCadastrada = propostaEditar;
+
+        cy.fileRequest('../e2e/Assets/pdf.pdf', {
+            method: "PUT",
+            url: urlProposta + "/" + idProposta + "/3",
+            headers,
         });
 
-        cy.request("PUT", urlProposta + "/2/3").as("TodoRequest");
-        cy.get("@TodoRequest").then(response => {
-            console.log(">>>>>>>> PROPOSTAS: \n", response.body)
-            expect(response.status).to.eq(200);
-        });
+        cy.deleteProposta();
     });
 });

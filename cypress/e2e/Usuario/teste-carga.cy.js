@@ -1,14 +1,14 @@
-const url = "http://localhost:8443/sod"
-
 describe("Usuário Endpoint - Teste de Carga", () => {
-    const pessoaLogin = { 
-        senha: 123, 
-        email: "romario@weg.net" 
+    const pessoaLogin = {
+        senha: 123,
+        email: "romario@weg.net"
     };
-    let headers = { 
-        'Cookie': "" 
-    };
+    const url = "http://localhost:8443/sod";
     const urlUsuario = url + "/usuario";
+    let headers = {
+        'Cookie': ""
+    };
+
 
     it('Pegar token de autenticação', () => {
         cy.request("POST", url + "/login/auth/cookie", pessoaLogin).as("TodoRequest");
@@ -23,16 +23,15 @@ describe("Usuário Endpoint - Teste de Carga", () => {
             method: 'GET',
             url: urlUsuario,
             headers
-        }).then(response => {
-            console.log(response);
-        });
+        }).as("TodoRequest");
 
         for (let i = 0; i < 200; i++) {
-            cy.request("GET", urlUsuario).as("TodoRequest");
             cy.get("@TodoRequest").then(response => {
                 expect(response.status).to.eq(200);
                 expect(response.duration).to.be.lte(1000);
             });
         };
+        
     });
+
 });

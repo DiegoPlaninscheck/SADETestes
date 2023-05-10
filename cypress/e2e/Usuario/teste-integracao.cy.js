@@ -1,12 +1,11 @@
-const url = "http://localhost:8443/sod"
-
 describe("Usuário Endpoint - Teste de Integração", () => {
-    const pessoaLogin = { 
-        senha: 123, 
-        email: "romario@weg.net" 
+    const pessoaLogin = {
+        senha: 123,
+        email: "romario@weg.net"
     };
-    let headers = { 
-        'Cookie': "" 
+    const url = "http://localhost:8443/sod";
+    let headers = {
+        'Cookie': ""
     };
 
     it('Fazer login com o usuário', () => {
@@ -16,4 +15,5 @@ describe("Usuário Endpoint - Teste de Integração", () => {
             cy.setCookie("jwt", headers['Cookie']);
         });
     });
+    
 });
