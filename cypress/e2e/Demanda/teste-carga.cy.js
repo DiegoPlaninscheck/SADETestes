@@ -1,11 +1,11 @@
 describe("Demanda EndPoint - Teste de carga", () => {
-    const pessoaLogin = {
-        senha: 123,
-        email: "romario@gmail.com"
-    };
     const url = "http://localhost:8443/sod";
     let headers = {
         'Cookie': ""
+    };
+    const pessoaLogin = {
+        senha: 123,
+        email: "romario@gmail.com"
     };
 
 
@@ -17,21 +17,20 @@ describe("Demanda EndPoint - Teste de carga", () => {
         });
     });
 
-    it("Buscar todas as demandas do banco", () => {
-        cy.request({
-            method: 'GET',
-            url: url + "/demanda",
-            headers
-        }).as("TodoRequest");
+    for (let i = 0; i < 100; i++) {
+        it("Buscar todas as demandas do banco, nº" + (i + 1), () => {
+            cy.request({
+                method: 'GET',
+                url: url + "/demanda",
+                headers
+            }).as("TodoRequest");
 
-        for (let i = 0; i < 100; i++) {
             cy.get("@TodoRequest").then((response) => {
                 expect(response.status).to.eq(200);
                 expect(response.duration).to.be.lte(1000);
             });
-        }
-
-    });
+        });
+    };
 
 });
 

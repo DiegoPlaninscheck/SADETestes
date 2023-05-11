@@ -1,11 +1,11 @@
 describe("Demanda EndPoint - Teste de integração", () => {
-    const pessoaLogin = {
-        senha: 123,
-        email: "romario@gmail.com"
-    };
     const url = "http://localhost:8443/sod";
     let headers = {
         'Cookie': ""
+    };
+    const pessoaLogin = {
+        senha: 123,
+        email: "romario@gmail.com"
     };
 
 
@@ -27,7 +27,6 @@ describe("Demanda EndPoint - Teste de integração", () => {
             expect(response.status).to.eq(200);
             expect(response.duration).to.be.lte(1000);
         });
-
     });
 
 });

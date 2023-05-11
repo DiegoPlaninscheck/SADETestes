@@ -1,12 +1,12 @@
 describe("Proposta Endpoint - Teste de Carga", () => {
-    const pessoaLogin = {
-        senha: 123,
-        email: "romario@gmail.com"
-    };
     const url = "http://localhost:8443/sod";
     const urlProposta = url + "/proposta";
     let headers = {
         'Cookie': ""
+    };
+    const pessoaLogin = {
+        senha: 123,
+        email: "romario@gmail.com"
     };
 
 
@@ -18,18 +18,18 @@ describe("Proposta Endpoint - Teste de Carga", () => {
         });
     });
 
-    it("Buscar proposta", () => {
-        cy.request({
-            method: 'GET',
-            url: urlProposta + "/1",
-            headers
-        }).as("TodoRequest");
-
-        for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 200; i++) {
+        it("Buscar proposta, nº: " + (i + 1), () => {
+            cy.request({
+                method: 'GET',
+                url: urlProposta + "/1",
+                headers
+            }).as("TodoRequest");
             cy.get("@TodoRequest").then(response => {
                 expect(response.status).to.eq(200);
                 expect(response.duration).to.be.lte(1000);
             });
-        };
-    });
+        });
+    };
+
 });

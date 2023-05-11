@@ -1,11 +1,11 @@
 describe("ATA EndPoint - Teste de processo", () => {
     const url = "localhost:8443/sod";
+    let headers = {
+        'Cookie': ""
+    };
     const pessoaLogin = {
         senha: 123,
         email: "romario@gmail.com"
-    };
-    let headers = {
-        'Cookie': ""
     };
     let ataObject = {
         "pauta": {
@@ -24,13 +24,11 @@ describe("ATA EndPoint - Teste de processo", () => {
 
 
     Cypress.Commands.add('deleteAta', () => {
-        cy.request("DELETE", url + "/ata/" + ataObject.idATA)
-            .then((response) => {
+        cy.request("DELETE", url + "/ata/" + ataObject.idATA).then((response) => {
                 expect(response.status).to.eq(200);
                 expect(response.duration).to.be.lte(1000);
             });
     });
-
 
     it('Pegar token de autenticação', () => {
         cy.request("POST", url + "/login/auth/cookie", pessoaLogin).as("TodoRequest");

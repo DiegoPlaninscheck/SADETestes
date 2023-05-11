@@ -1,12 +1,12 @@
 describe("Demanda EndPoint - Teste de carga", () => {
-    const pessoaLogin = {
-        senha: 123,
-        email: "romario@gmail.com"
-    };
     const url = "http://localhost:8443/sod";
     const urlDemanda = url + "/demanda";
     let headers = {
         'Cookie': ""
+    };
+    const pessoaLogin = {
+        senha: 123,
+        email: "romario@gmail.com"
     };
     let demandaObject = {
         "tituloDemanda": "titulo demanda novo teste historico 5",
@@ -42,8 +42,7 @@ describe("Demanda EndPoint - Teste de carga", () => {
 
     Cypress.Commands.add('fileRequest', (filePath, requestOptions) => {
         return cy
-            .fixture(filePath, 'binary')
-            .then(file => {
+            .fixture(filePath, 'binary').then(file => {
                 const blob = Cypress.Blob.binaryStringToBlob(file);
                 const formData = new FormData();
                 formData.append("demanda", JSON.stringify(demandaObject));
@@ -53,8 +52,7 @@ describe("Demanda EndPoint - Teste de carga", () => {
                     ...requestOptions,
                     body: formData,
                 });
-            })
-            .then(response => {
+            }).then(response => {
                 expect(response.status).to.eq(200);
                 expect(response.duration).to.be.lte(1000);
 
@@ -64,13 +62,11 @@ describe("Demanda EndPoint - Teste de carga", () => {
     });
 
     Cypress.Commands.add('deleteDemanda', () => {
-        cy.request("DELETE", urlDemanda + "/" + demandaObject.idDemanda)
-            .then((response) => {
+        cy.request("DELETE", urlDemanda + "/" + demandaObject.idDemanda).then((response) => {
                 expect(response.status).to.eq(200);
                 expect(response.duration).to.be.lte(1000);
             });
     });
-
 
     it('Pegar token de autenticação', () => {
         cy.request("POST", url + "/login/auth/cookie", pessoaLogin).as("TodoRequest");

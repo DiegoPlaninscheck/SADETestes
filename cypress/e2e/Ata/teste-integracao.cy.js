@@ -1,11 +1,11 @@
 describe("ATA EndPoint - Teste de Integração", () => {
-    const pessoaLogin = {
-        senha: 123,
-        email: "romario@gmail.com"
-    };
     const url = "localhost:8443/sod";
     let headers = {
         'Cookie': ""
+    };
+    const pessoaLogin = {
+        senha: 123,
+        email: "romario@gmail.com"
     };
 
 

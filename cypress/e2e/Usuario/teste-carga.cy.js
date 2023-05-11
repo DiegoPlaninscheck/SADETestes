@@ -18,20 +18,20 @@ describe("Usuário Endpoint - Teste de Carga", () => {
         });
     });
 
-    it("Pegar todos os usuários", () => {
-        cy.request({
-            method: 'GET',
-            url: urlUsuario,
-            headers
-        }).as("TodoRequest");
+    for (let i = 0; i < 200; i++) {
+        it("Pegar todos os usuários, nº: " + (i + 1), () => {
+            cy.request({
+                method: 'GET',
+                url: urlUsuario,
+                headers
+            }).as("TodoRequest");
 
-        for (let i = 0; i < 200; i++) {
             cy.get("@TodoRequest").then(response => {
                 expect(response.status).to.eq(200);
                 expect(response.duration).to.be.lte(1000);
             });
-        };
-        
-    });
+
+        });
+    };
 
 });
