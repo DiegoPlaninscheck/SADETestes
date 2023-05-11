@@ -17,8 +17,8 @@ describe("Pauta EndPoint - Teste de Carga", () => {
         });
     });
 
-    it("Buscar todos os arquivos das Pautas do banco 50 vezes", () => {
-        for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 50; i++) {
+        it("Buscar todos os arquivos das Pautas, nº: " + (i + 1), () => {
             cy.request({
                 method: "GET",
                 url: `${url}/pauta/arquivos/pautas`,
@@ -28,7 +28,7 @@ describe("Pauta EndPoint - Teste de Carga", () => {
                 expect(res.duration).to.be.lte(1000);
                 expect(res.body.length).to.be.gte(0);
             });
-        }
-    });
+        });
+    }
 
 });

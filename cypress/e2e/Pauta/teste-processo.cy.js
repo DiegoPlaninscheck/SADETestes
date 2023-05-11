@@ -81,7 +81,18 @@ describe("Pauta EndPoint - Teste de Processo", () => {
             expect(res.body).to.not.null;
         });
 
-        //consultar a pauta para ver se os pareceres das propostas foram atualizados
+    });
+
+    it("Verificar se os pareceres foram atualizados", () => {
+        cy.request({
+            method: "GET",
+            url: `${url}/pauta/${idPauta}`,
+            headers
+        }).then((res) => {
+            expect(res.status).to.eq(200);
+            expect(res.body.propostasPauta[0].comentario).to.not.null;
+            expect(res.body.propostasPauta[0].comentario).to.not.eq("");
+        });
 
         cy.request({
             method: "DELETE",

@@ -18,18 +18,17 @@ describe("Proposta Endpoint - Teste de Carga", () => {
         });
     });
 
-    it("Buscar proposta", () => {
-        cy.request({
-            method: 'GET',
-            url: urlProposta + "/1",
-            headers
-        }).as("TodoRequest");
-
-        for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 200; i++) {
+        it("Buscar proposta, nº: " + (i + 1), () => {
+            cy.request({
+                method: 'GET',
+                url: urlProposta + "/1",
+                headers
+            }).as("TodoRequest");
             cy.get("@TodoRequest").then(response => {
                 expect(response.status).to.eq(200);
                 expect(response.duration).to.be.lte(1000);
             });
-        };
-    });
+        });
+    };
 });
