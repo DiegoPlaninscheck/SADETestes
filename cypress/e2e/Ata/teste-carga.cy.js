@@ -1,11 +1,11 @@
 describe("ATA EndPoint - Teste de Carga", () => {
     const url = "localhost:8443/sod";
+    let headers = {
+        'Cookie': ""
+    };
     const pessoaLogin = {
         senha: 123,
         email: "romario@gmail.com"
-    };
-    let headers = {
-        'Cookie': ""
     };
 
 
@@ -17,7 +17,6 @@ describe("ATA EndPoint - Teste de Carga", () => {
         });
     });
 
-    //fzaer for com it dentro
     for (let i = 0; i < 100; i++) {
         it("Buscar todas as ATAs. nº: " + (i + 1), () => {
             cy.request({
@@ -29,6 +28,6 @@ describe("ATA EndPoint - Teste de Carga", () => {
                 expect(res.duration).to.be.lte(1000);
             });
         });
-    }
+    };
 
 });

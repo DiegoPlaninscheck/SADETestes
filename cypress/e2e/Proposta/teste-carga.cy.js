@@ -1,12 +1,12 @@
 describe("Proposta Endpoint - Teste de Carga", () => {
-    const pessoaLogin = {
-        senha: 123,
-        email: "romario@gmail.com"
-    };
     const url = "http://localhost:8443/sod";
     const urlProposta = url + "/proposta";
     let headers = {
         'Cookie': ""
+    };
+    const pessoaLogin = {
+        senha: 123,
+        email: "romario@gmail.com"
     };
 
 
@@ -31,4 +31,5 @@ describe("Proposta Endpoint - Teste de Carga", () => {
             });
         });
     };
+
 });

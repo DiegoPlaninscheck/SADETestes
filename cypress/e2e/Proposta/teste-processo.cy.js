@@ -1,13 +1,12 @@
-const url = "http://localhost:8443/sod"
-
 describe("Proposta Endpoint - Teste de Processo", () => {
-    const pessoaLogin = {
-        senha: 123,
-        email: "romario@gmail.com"
-    };
+    const url = "http://localhost:8443/sod"
     const urlProposta = url + "/proposta";
     let headers = {
         'Cookie': ""
+    };
+    const pessoaLogin = {
+        senha: 123,
+        email: "romario@gmail.com"
     };
     let propostaCadastrada = {
         "escopo": "hum, é viável, bora ver no que da",
@@ -83,13 +82,11 @@ describe("Proposta Endpoint - Teste de Processo", () => {
     });
 
     Cypress.Commands.add('deleteProposta', () => {
-        cy.request("DELETE", urlProposta + "/" + idProposta)
-            .then((response) => {
+        cy.request("DELETE", urlProposta + "/" + idProposta).then((response) => {
                 expect(response.status).to.eq(200);
                 expect(response.duration).to.be.lte(1000);
             });
     });
-
 
     it('Pegar token de autenticação', () => {
         cy.request("POST", url + "/login/auth/cookie", pessoaLogin).as("TodoRequest");
@@ -117,15 +114,15 @@ describe("Proposta Endpoint - Teste de Processo", () => {
             for (let centroCusto of tabela.centrosCustoPagantes) {
                 centroCusto.centroCusto.idCentroCusto = 2;
                 centroCusto.porcentagemDespesa = 0.5;
-            }
-        }
+            };
+        };
 
         propostaCadastrada = propostaEditar;
 
         cy.fileRequest('../e2e/Assets/pdf.pdf', {
             method: "PUT",
             url: urlProposta + "/" + idProposta + "/3",
-            headers,
+            headers
         });
     });
 
@@ -133,13 +130,13 @@ describe("Proposta Endpoint - Teste de Processo", () => {
         cy.request({
             method: "GET",
             url: urlProposta + "/" + idProposta,
-            headers,
+            headers
         }).then((response) => {
-            expect(response.status).to.eq(200)
-            expect(response.body.tabelasCustoProposta[0].centrosCustoPagantes[0].centroCusto.idCentroCusto).to.eq(2)
+            expect(response.status).to.eq(200);
+            expect(response.body.tabelasCustoProposta[0].centrosCustoPagantes[0].centroCusto.idCentroCusto).to.eq(2);
         });
 
         cy.deleteProposta();
-    })
+    });
 
 });

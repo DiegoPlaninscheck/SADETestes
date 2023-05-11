@@ -1,11 +1,11 @@
 describe("Pauta EndPoint - Teste de Processo", () => {
-    const pessoaLogin = {
-        senha: 123,
-        email: "romario@gmail.com"
-    };
     const url = "localhost:8443/sod";
     let headers = {
         'Cookie': ""
+    };
+    const pessoaLogin = {
+        senha: 123,
+        email: "romario@gmail.com"
     };
     let pautaDTO = {
         "tituloReuniaoPauta": "Título da reunião da pauta",
@@ -46,7 +46,6 @@ describe("Pauta EndPoint - Teste de Processo", () => {
             pautaDTO.propostasPauta = res.body.propostasPauta;
             idPauta = res.body.idPauta;
         });
-
     });
 
     it("Colocar o parecer da Comissão na Pauta", () => {
@@ -67,7 +66,7 @@ describe("Pauta EndPoint - Teste de Processo", () => {
             };
 
             listaDecisoesPropostaspauta.push(infoDecisao);
-        }
+        };
 
         formData.append("pauta", JSON.stringify(pautaEdicaoDTO));
 
@@ -80,7 +79,6 @@ describe("Pauta EndPoint - Teste de Processo", () => {
             expect(res.status).to.eq(200);
             expect(res.body).to.not.null;
         });
-
     });
 
     it("Verificar se os pareceres foram atualizados", () => {
@@ -102,7 +100,6 @@ describe("Pauta EndPoint - Teste de Processo", () => {
             expect(res.status).to.eq(200);
             expect(res.body).to.eq("Pauta deletada com sucesso!");
         });
-
     });
 
 });

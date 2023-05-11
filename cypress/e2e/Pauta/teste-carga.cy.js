@@ -1,13 +1,13 @@
 describe("Pauta EndPoint - Teste de Carga", () => {
-    const pessoaLogin = {
-        senha: 123,
-        email: "romario@gmail.com"
-    };
     const url = "localhost:8443/sod";
     let headers = {
         'Cookie': ""
     };
-
+    const pessoaLogin = {
+        senha: 123,
+        email: "romario@gmail.com"
+    };
+    
 
     it('Pegar token de autenticação', () => {
         cy.request("POST", url + "/login/auth/cookie", pessoaLogin).as("TodoRequest");
@@ -29,6 +29,6 @@ describe("Pauta EndPoint - Teste de Carga", () => {
                 expect(res.body.length).to.be.gte(0);
             });
         });
-    }
+    };
 
 });
