@@ -1,41 +1,27 @@
 describe("Usuário Endpoint - Teste de Processo", () => {
     const pessoaLogin = {
-        senha: 123,
-        email: "romario@gmail.com"
+        email: "romario@gmail.com",
+        senha: 123
     };
-    const pessoaEditada = {
-        "numeroCadastro": 678,
-        "nomeUsuario": "Romário",
+    const pessoaCadastrada = {
+        "numeroCadastro": Math.random() * 10000,
+        "nomeUsuario": "Pessoa Teste",
         "departamento": "TI",
-        "email": "romario@gmail.com",
+        "email": "pessoateste@gmail.com",
         "senha": "123",
         "setor": "TI",
         "cargo": "Desenvolvedor Backend",
         "notificacoesUsuario": null
     };
+    const pessoaCadastrarLogin = {
+        email: "pessoateste@gmail.com",
+        senha: "123"
+    }
     const url = "http://localhost:8443/sod";
     const urlUsuario = url + "/usuario";
     let headers = {
         'Cookie': ""
     };
-
-
-    Cypress.Commands.add('fileRequest', (filePath, requestOptions) => {
-        return cy
-            .fixture(filePath, 'binary').then(file => {
-                const blob = Cypress.Blob.binaryStringToBlob(file);
-                const formData = new FormData();
-                formData.append("usuario", JSON.stringify(pessoaEditada));
-                formData.set('foto', blob);
-
-                return cy.request({
-                    ...requestOptions,
-                    body: formData,
-                });
-            }).then(response => {
-                expect(response.status).to.eq(200);
-            });
-    });
 
 
     it('Pegar token de autenticação', () => {
@@ -48,22 +34,53 @@ describe("Usuário Endpoint - Teste de Processo", () => {
 
     //fazer processo de cadastro e login com outro usuário
 
-    it("Alterar foto de perfil", () => {
-        cy.fileRequest('../e2e/Assets/romario.jpeg', {
-            method: 'PUT',
-            url: urlUsuario + "/6",
+    let idUsuarioCadastrado;
+    it('Cadastrar uma nova pessoa no sistema', () => {
+        const formData = new FormData();
+
+        formData.append("usuario", JSON.stringify(pessoaCadastrada));
+
+        cy.request({
+            method: "POST",
+            url: `${urlUsuario}/${1}`,
+            body: formData,
             headers
+        }).then((res) => {
+            const dec = new TextDecoder();
+            let body = JSON.parse(dec.decode(res.body));
+            idUsuarioCadastrado = body.idUsuario;
+            expect(body).to.not.null
+            expect(res.status).to.eq(200)
+        }).then(() => {
+            cy.request({
+                method: "GET",
+                url: `${urlUsuario}/${idUsuarioCadastrado}`,
+                headers
+            }).then((res) => {
+                expect(res.body).to.not.null;
+                expect(res.status).to.eq(200)
+            })
+        }).then(() => {
+            cy.clearCookies()
+        })
+    });
+
+    it('Login com o novo usuário', () => {
+        cy.request("POST", url + "/login/auth/cookie", pessoaCadastrarLogin).as("TodoRequest");
+        cy.get("@TodoRequest").then((response) => {
+            headers['Cookie'] = "jwt=" + response.body.value;
+            cy.setCookie("jwt", headers['Cookie']);
         });
     });
 
-    it("Ver gerente de departamento do usuário logado", () => {
+    it('Deletar pessoa cadastrada', () => {
         cy.request({
-            method: 'GET',
-            url: urlUsuario + "/gerente/departamento/TI",
+            method: "DELETE",
+            url: `${urlUsuario}/${idUsuarioCadastrado}`,
             headers
-        }).then(response => {
-            expect(response.status).to.eq(200);
+        }).then((res) => {
+            expect(res.status).to.eq(200)
         });
     });
-    
+
 });
